@@ -1,10 +1,11 @@
+//kawii miku will show up
 #include<iostream>
 #include <vector>
 #include <cassert>
 using namespace std;
 template<typename T>
-class Ele//ÈıÔª×é£¬ÓÃÀ´´¢´æÔªËØĞĞÁĞºÍÖµ
-{//Âú×ã×î»ù±¾ĞèÇó£¬Ã»ÓĞ½øĞĞ¹ı¶à·â×°
+class Ele//ä¸‰å…ƒç»„ï¼Œç”¨æ¥å‚¨å­˜å…ƒç´ è¡Œåˆ—å’Œå€¼
+{//æ»¡è¶³æœ€åŸºæœ¬éœ€æ±‚ï¼Œæ²¡æœ‰è¿›è¡Œè¿‡å¤šå°è£…
 public:
 	int row, col;
 	T value;
@@ -33,18 +34,18 @@ public:
 };
 
 template<typename T>
-class SparseMatrix //×Ô¶¨ÒåÏ¡Êè¾ØÕóÀà
+class SparseMatrix //è‡ªå®šä¹‰ç¨€ç–çŸ©é˜µç±»
 {
 public:
-	Ele<T> * eles; //Ï¡Êè¾ØÕóÓÃÈıÔª×éµÄÊı×é´æ´¢
+	Ele<T> * eles; //ç¨€ç–çŸ©é˜µç”¨ä¸‰å…ƒç»„çš„æ•°ç»„å­˜å‚¨
 	int count;
 	int max_row, max_col;
 	SparseMatrix(T** nums, int row, int col) 
-	{	//ÏÈÅÅ³ıÒ»¶¨µÄ²»ºÏ·¨ÊäÈë
+	{	//å…ˆæ’é™¤ä¸€å®šçš„ä¸åˆæ³•è¾“å…¥
 		if (row <= 0 || col <= 0 || nums == nullptr) {
 			throw std::invalid_argument("Invalid matrix dimensions or null pointer.");
 		}
-		//ÏÈÍ³¼Æ¸öÊı
+		//å…ˆç»Ÿè®¡ä¸ªæ•°
 		max_row = row;
 		max_col = col;
 		count = 0;
@@ -60,14 +61,14 @@ public:
 		}
 		eles = new Ele<T>[count];
 		int index = 0;
-		//ÔÙ´æ´¢·ÇÁãÔªËØ
+		//å†å­˜å‚¨éé›¶å…ƒç´ 
 		for (int i = 0; i < row; i++) 
 		{
 			for (int j = 0; j < col; j++) 
 			{
 				if (nums[i][j] != 0) 
 				{
-					assert(index < count);//È·±£²»Ô½½ç
+					assert(index < count);//ç¡®ä¿ä¸è¶Šç•Œ
 					eles[index]=Ele<T>(i, j, nums[i][j]);
 					index++;
 				}
@@ -76,7 +77,7 @@ public:
 	}
 
 	void show_all() 
-	{	//Êä³öËùÓĞ·ÇÁãÔªËØ
+	{	//è¾“å‡ºæ‰€æœ‰éé›¶å…ƒç´ 
 		for (int i = 0; i < count;i++) 
 		{
 			cout << eles[i] << endl;
@@ -124,23 +125,23 @@ public:
 
 	void FastTranspose() 
 	{
-		// ¿ìËÙ×ªÖÃËã·¨µÄÊµÏÖ
+		// å¿«é€Ÿè½¬ç½®ç®—æ³•çš„å®ç°
 		int* info = new int[2 * max_col];
-		for (int i = 0; i < max_col; ++i) info[i] = 0; // RowSize³õÊ¼»¯
-		for (int i = 0; i < max_col; ++i) info[max_col + i] = 0; // RowStart³õÊ¼»¯
+		for (int i = 0; i < max_col; ++i) info[i] = 0; // RowSizeåˆå§‹åŒ–
+		for (int i = 0; i < max_col; ++i) info[max_col + i] = 0; // RowStartåˆå§‹åŒ–
 
 		Ele<T>* copy_list = new Ele<T>[count];
 		
-		for (int i = 0; i < count; i++)//Í³¼ÆÃ¿Ò»ÁĞµÄ·ÇÁãÔªËØ¸öÊı
+		for (int i = 0; i < count; i++)//ç»Ÿè®¡æ¯ä¸€åˆ—çš„éé›¶å…ƒç´ ä¸ªæ•°
 		{
 			info[eles[i].col]++;
 		}
-		for (int i = 1; i < max_col; i++)//¼ÆËãÃ¿Ò»ÁĞµÚÒ»¸ö·ÇÁãÔªËØÔÚ×ªÖÃºóµÄÎ»ÖÃ
+		for (int i = 1; i < max_col; i++)//è®¡ç®—æ¯ä¸€åˆ—ç¬¬ä¸€ä¸ªéé›¶å…ƒç´ åœ¨è½¬ç½®åçš„ä½ç½®
 		{
 			info[i+max_col] = info[max_col+i - 1] + info[i - 1];
 
 		}
-		for (int i = 0; i < count; i++)//½«ÔªËØ·Åµ½×ªÖÃºóµÄÎ»ÖÃ
+		for (int i = 0; i < count; i++)//å°†å…ƒç´ æ”¾åˆ°è½¬ç½®åçš„ä½ç½®
 		{
 			int pos = info[max_col+eles[i].col];
 			copy_list[pos] = Ele<T>(eles[i].col, eles[i].row, eles[i].value); 
@@ -149,12 +150,12 @@ public:
 		}
 		delete[] eles;
 		eles = new Ele<T>[count];
-		for (int i = 0; i < count; i++)//½«ÔªËØ·Åµ½×ªÖÃºóµÄÎ»ÖÃ
+		for (int i = 0; i < count; i++)//å°†å…ƒç´ æ”¾åˆ°è½¬ç½®åçš„ä½ç½®
 		{
 			eles[i] = copy_list[i];
 
 		}
-		//É¾³ıÁÙÊ±Êı×é
+		//åˆ é™¤ä¸´æ—¶æ•°ç»„
 		delete[] copy_list;
 		delete[] info;
 		info = nullptr;
@@ -169,13 +170,13 @@ int main()
 	//test Ele begin
 	cout << "Test Ele class:" << endl;
 	Ele<int> e(1, 2, 3);
-	cout << e << endl; // Êä³ö: Row: 1, Col: 2, Value: 3
+	cout << e << endl; // è¾“å‡º: Row: 1, Col: 2, Value: 3
 	Ele<double> e2(4, 5, 6.7);
-	cout << e2 << endl; // Êä³ö: Row: 4, Col: 5, Value: 6.7
+	cout << e2 << endl; // è¾“å‡º: Row: 4, Col: 5, Value: 6.7
 	//test end
 	//test SparseMatrix begin
 	cout << "Test SparseMatrix class:" << endl;
-	//´´½¨¾ØÕó²¢ÓÃÖ¸Õë±íÊ¾
+	//åˆ›å»ºçŸ©é˜µå¹¶ç”¨æŒ‡é’ˆè¡¨ç¤º
 	int matrix_test2[5][8] = {
 		{0,0,3,0,4,0,0,0},
 		{0,0,5,7,0,0,0,0},
@@ -188,7 +189,7 @@ int main()
 	{
 		matrix_ptr[i] = matrix_test2[i];
 	}
-	//´´½¨ÊµÀı²¢²âÊÔ
+	//åˆ›å»ºå®ä¾‹å¹¶æµ‹è¯•
 	SparseMatrix<int>* sm = nullptr;
 	try {
 		sm = new SparseMatrix<int>(matrix_ptr, 5, 8);
@@ -204,4 +205,5 @@ int main()
 		sm->show_all();
 		delete sm;
 	}
+
 }
