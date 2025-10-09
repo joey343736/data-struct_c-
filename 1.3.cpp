@@ -125,24 +125,26 @@ public:
 	void FastTranspose() 
 	{
 		// 快速转置算法的实现
-		int *count_col=new int [max_col]();
-		int* count_pos_from_first = new int[max_col]();//直接初始化为0
+		int* info = new int[2 * max_col];
+		for (int i = 0; i < max_col; ++i) info[i] = 0; // RowSize初始化
+		for (int i = 0; i < max_col; ++i) info[max_col + i] = 0; // RowStart初始化
+
 		Ele<T>* copy_list = new Ele<T>[count];
 		
 		for (int i = 0; i < count; i++)//统计每一列的非零元素个数
 		{
-			count_col[eles[i].col]++;
+			info[eles[i].col]++;
 		}
 		for (int i = 1; i < max_col; i++)//计算每一列第一个非零元素在转置后的位置
 		{
-			count_pos_from_first[i] = count_pos_from_first[i - 1] + count_col[i - 1];
+			info[i+max_col] = info[max_col+i - 1] + info[i - 1];
 
 		}
 		for (int i = 0; i < count; i++)//将元素放到转置后的位置
 		{
-			int pos = count_pos_from_first[eles[i].col];
+			int pos = info[max_col+eles[i].col];
 			copy_list[pos] = Ele<T>(eles[i].col, eles[i].row, eles[i].value); 
-			count_pos_from_first[eles[i].col]++;
+			info[max_col+eles[i].col]++;
 		
 		}
 		delete[] eles;
@@ -154,11 +156,9 @@ public:
 		}
 		//删除临时数组
 		delete[] copy_list;
-		delete[] count_col;
-		delete[] count_pos_from_first;
+		delete[] info;
+		info = nullptr;
 		copy_list = nullptr;
-		count_col = nullptr;
-		count_pos_from_first = nullptr;
 
 	}
 	
